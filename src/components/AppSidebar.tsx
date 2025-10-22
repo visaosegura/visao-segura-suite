@@ -28,13 +28,6 @@ import { Button } from "@/components/ui/button";
 const menuItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Clientes", url: "/clientes", icon: Users },
-  { title: "Operadores", url: "/operadores", icon: UserCog },
-  { title: "Câmeras", url: "/cameras", icon: Camera },
-  { title: "Logs Analíticos", url: "/logs", icon: Activity },
-  { title: "Planos", url: "/planos", icon: Package },
-  { title: "Gravações", url: "/gravacoes", icon: Video },
-  { title: "Mosaico", url: "/mosaico", icon: Grid3x3 },
-  { title: "Whitelabel", url: "/whitelabel", icon: Palette },
 ];
 
 export function AppSidebar() {
