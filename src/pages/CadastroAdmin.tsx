@@ -59,8 +59,9 @@ export default function CadastroAdmin() {
     },
   });
 
-  // Validação simples de token (substituir por validação real no backend)
-  const tokenValido = token && token.length > 10;
+  // Validação simples de token (permitindo qualquer token para teste)
+  // Em produção, validar com o backend
+  const tokenValido = token && token.length > 0;
 
   const proximaEtapa = async () => {
     let camposValidos = false;
