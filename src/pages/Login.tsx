@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import loginLogo from "@/assets/login-logo.png";
+import logo from "@/assets/logo.png";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
@@ -81,11 +81,11 @@ const Login = () => {
           <div className="mb-8 flex justify-center">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-orange-600/10 rounded-3xl blur-2xl"></div>
-              <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl">
+              <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 shadow-2xl">
                 <img 
-                  src={loginLogo} 
+                  src={logo} 
                   alt="Visão Segura" 
-                  className="w-40 h-40 object-contain"
+                  className="w-24 h-24 object-contain"
                 />
               </div>
             </div>
