@@ -46,10 +46,13 @@ export function AppSidebar() {
       <SidebarContent>
         <div className="px-4 py-6">
           <div className="flex items-center gap-3">
-            <img src={logo} alt="Visão Segura" className="w-10 h-10 object-contain flex-shrink-0" />
+            <div className="flex-shrink-0">
+              <img src={logo} alt="Visão Segura" className="w-10 h-10 object-contain" />
+            </div>
             {!isCollapsed && (
               <div>
                 <h2 className="text-lg font-bold text-sidebar-foreground">Visão Segura</h2>
+                <p className="text-xs text-sidebar-foreground/70">Sistema de Monitoramento</p>
               </div>
             )}
           </div>
