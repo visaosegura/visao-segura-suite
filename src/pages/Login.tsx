@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/logo.png";
+import loginLogo from "@/assets/login-logo.png";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
@@ -69,9 +69,9 @@ const Login = () => {
         <div className="text-center mb-12">
           <div className="mb-6 flex justify-center">
             <img 
-              src={logo} 
+              src={loginLogo} 
               alt="Visão Segura" 
-              className="w-32 h-32 object-contain"
+              className="w-48 h-48 object-contain"
             />
           </div>
         </div>
