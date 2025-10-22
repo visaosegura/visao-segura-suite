@@ -58,22 +58,11 @@ export function DadosEmpresa({ form }: DadosEmpresaProps) {
 
       <div className="space-y-2">
         <Label htmlFor="areaAtuacao">Área de Atuação *</Label>
-        <Select
-          onValueChange={(value) => form.setValue("empresa.areaAtuacao", value)}
-          value={form.watch("empresa.areaAtuacao")}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Selecione uma área" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="seguranca">Segurança e Monitoramento</SelectItem>
-            <SelectItem value="condominios">Condomínios</SelectItem>
-            <SelectItem value="varejo">Varejo</SelectItem>
-            <SelectItem value="industria">Indústria</SelectItem>
-            <SelectItem value="logistica">Logística</SelectItem>
-            <SelectItem value="outros">Outros</SelectItem>
-          </SelectContent>
-        </Select>
+        <Input
+          id="areaAtuacao"
+          {...form.register("empresa.areaAtuacao")}
+          placeholder="Ex: Segurança e Monitoramento"
+        />
         {(form.formState.errors.empresa as any)?.areaAtuacao && (
           <p className="text-sm text-destructive">
             {getErrorMessage((form.formState.errors.empresa as any)?.areaAtuacao)}

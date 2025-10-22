@@ -4,13 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { cadastroCompleto, CadastroCompleto } from "@/lib/validations/cadastroSchema";
 import { DadosEmpresa } from "@/components/cadastro/DadosEmpresa";
 import { DadosContato } from "@/components/cadastro/DadosContato";
 import { DadosEndereco } from "@/components/cadastro/DadosEndereco";
 import { DadosAcesso } from "@/components/cadastro/DadosAcesso";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, Mail } from "lucide-react";
 import loginLogo from "@/assets/login-logo.png";
 
 const ETAPAS = [
@@ -26,6 +27,7 @@ export default function CadastroAdmin() {
   const { toast } = useToast();
   const [etapaAtual, setEtapaAtual] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
 
   const form = useForm<CadastroCompleto>({
     resolver: zodResolver(cadastroCompleto),
@@ -82,6 +84,11 @@ export default function CadastroAdmin() {
           "endereco.cidade",
           "endereco.estado",
         ]);
+        if (camposValidos) {
+          // Mostrar pop-up de confirmação de email antes de ir para etapa 4
+          setShowEmailDialog(true);
+          return;
+        }
         break;
       case 4:
         camposValidos = await form.trigger(["acesso.nomeUsuario", "acesso.senha", "acesso.confirmarSenha"]);
@@ -91,6 +98,11 @@ export default function CadastroAdmin() {
     if (camposValidos) {
       setEtapaAtual((prev) => Math.min(prev + 1, 4));
     }
+  };
+
+  const confirmarEmail = () => {
+    setShowEmailDialog(false);
+    setEtapaAtual(4);
   };
 
   const etapaAnterior = () => {
@@ -218,6 +230,32 @@ export default function CadastroAdmin() {
         <footer className="text-center mt-8 text-sm text-muted-foreground">
           © 2025 Visão Segura - Todos os direitos reservados
         </footer>
+
+        {/* Dialog de Confirmação de Email */}
+        <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Mail className="h-5 w-5 text-primary" />
+                Confirmação de Email
+              </DialogTitle>
+              <DialogDescription className="pt-4">
+                Um email de confirmação será enviado para <strong>{form.watch("contato.email")}</strong>.
+                <br /><br />
+                Por favor, verifique sua caixa de entrada e confirme seu email antes de prosseguir com o cadastro.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowEmailDialog(false)}>
+                Voltar
+              </Button>
+              <Button onClick={confirmarEmail}>
+                Continuar
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

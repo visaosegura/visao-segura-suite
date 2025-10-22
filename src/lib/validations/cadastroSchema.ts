@@ -40,7 +40,7 @@ const validarCNPJ = (cnpj: string) => {
 export const dadosEmpresaSchema = z.object({
   razaoSocial: z.string().min(3, "Razão social deve ter no mínimo 3 caracteres"),
   cnpj: z.string().refine((val) => validarCNPJ(val), "CNPJ inválido"),
-  areaAtuacao: z.string().min(1, "Selecione uma área de atuação"),
+  areaAtuacao: z.string().min(3, "Área de atuação deve ter no mínimo 3 caracteres"),
 });
 
 export const dadosContatoSchema = z.object({
