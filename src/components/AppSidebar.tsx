@@ -45,8 +45,8 @@ export function AppSidebar() {
     <Sidebar className={isCollapsed ? "w-14" : "w-64"} collapsible="icon">
       <SidebarContent>
         <div className="px-4 py-6">
-          <div className="flex items-center justify-center">
-            <img src={logo} alt="Visão Segura" className="w-12 h-12 object-contain" />
+          <div className="flex items-center justify-start">
+            <img src={logo} alt="Visão Segura" className="w-20 h-20 object-contain" />
           </div>
         </div>
 
