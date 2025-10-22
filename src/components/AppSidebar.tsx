@@ -10,8 +10,8 @@ import {
   Grid3x3,
   Palette,
   LogOut,
-  ShieldCheck,
 } from "lucide-react";
+import logo from "@/assets/logo.png";
 import {
   Sidebar,
   SidebarContent,
@@ -53,9 +53,7 @@ export function AppSidebar() {
       <SidebarContent>
         <div className="px-4 py-6">
           <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <ShieldCheck className="w-6 h-6 text-primary" />
-            </div>
+            <img src={logo} alt="Visão Segura" className="w-10 h-10 object-contain flex-shrink-0" />
             {!isCollapsed && (
               <div>
                 <h2 className="text-lg font-bold text-sidebar-foreground">Visão Segura</h2>
