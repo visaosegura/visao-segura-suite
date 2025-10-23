@@ -24,7 +24,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
 
 const menuItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -34,10 +33,10 @@ const menuItems = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
-  const { signOut } = useAuth();
 
-  const handleLogout = async () => {
-    await signOut();
+  const handleLogout = () => {
+    // Mock logout - substituir com Supabase depois
+    window.location.href = "/";
   };
 
   const isCollapsed = state === "collapsed";

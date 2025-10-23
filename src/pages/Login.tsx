@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
 import loginLogo from "@/assets/login-logo.png";
 
 const loginSchema = z.object({
@@ -23,18 +22,6 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, userType, signIn } = useAuth();
-
-  useEffect(() => {
-    // Redirect if already logged in
-    if (user && userType) {
-      if (userType === "admin") {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/cliente/dashboard");
-      }
-    }
-  }, [user, userType, navigate]);
 
   const {
     register,
@@ -47,17 +34,23 @@ const Login = () => {
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     
+    // Mock login - substituir com Supabase depois
     try {
-      await signIn(data.email, data.password);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      // Mock: aceitar qualquer email/senha
+      console.log("Login attempt:", data.email);
       
       toast({
         title: "Login realizado!",
         description: "Bem-vindo ao Visão Segura",
       });
-    } catch (error: any) {
+      
+      navigate("/dashboard");
+    } catch (error) {
       toast({
         title: "Erro ao fazer login",
-        description: error.message || "Verifique suas credenciais e tente novamente",
+        description: "Verifique suas credenciais e tente novamente",
         variant: "destructive",
       });
     } finally {
