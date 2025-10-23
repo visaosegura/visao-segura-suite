@@ -3,11 +3,6 @@ import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
-interface UserMetadata {
-  tipo_cliente?: "admin" | "cliente";
-  razao_nome?: string;
-}
-
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -26,6 +21,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Helper function to fetch user role from database
+  const fetchUserRole = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .single();
+    
+    if (error) {
+      console.error('Error fetching user role:', error);
+      return null;
+    }
+    
+    return data?.role as "admin" | "cliente" | null;
+  };
+
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -34,24 +45,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          const metadata = session.user.user_metadata as UserMetadata;
-          setUserType(metadata?.tipo_cliente ?? null);
+          // Fetch role from database
+          setTimeout(() => {
+            fetchUserRole(session.user.id).then(role => {
+              setUserType(role);
+              setLoading(false);
+            });
+          }, 0);
         } else {
           setUserType(null);
+          setLoading(false);
         }
-        
-        setLoading(false);
       }
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        const metadata = session.user.user_metadata as UserMetadata;
-        setUserType(metadata?.tipo_cliente ?? null);
+        const role = await fetchUserRole(session.user.id);
+        setUserType(role);
       }
       
       setLoading(false);
@@ -69,11 +84,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
 
     if (data.user) {
-      const metadata = data.user.user_metadata as UserMetadata;
-      const tipo = metadata?.tipo_cliente;
+      // Fetch role from database
+      const role = await fetchUserRole(data.user.id);
       
       // Redirect based on user type
-      if (tipo === "admin") {
+      if (role === "admin") {
         navigate("/admin/dashboard");
       } else {
         navigate("/cliente/dashboard");

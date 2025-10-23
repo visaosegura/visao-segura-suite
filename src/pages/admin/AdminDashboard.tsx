@@ -65,17 +65,48 @@ export default function AdminDashboard() {
         .select("*", { count: "exact", head: true })
         .eq("status", "blocked");
 
+      // Get total cameras
+      const { count: totalCameras } = await supabase
+        .from("cameras")
+        .select("*", { count: "exact", head: true });
+
+      // Get active cameras (online)
+      const { count: activeCameras } = await supabase
+        .from("cameras")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "online");
+
+      // Get blocked cameras (offline)
+      const { count: blockedCameras } = await supabase
+        .from("cameras")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "offline");
+
+      // Get total videos
+      const { count: totalVideos } = await supabase
+        .from("videos")
+        .select("*", { count: "exact", head: true });
+
+      // Calculate total hours and minutes from videos
+      const { data: videosData } = await supabase
+        .from("videos")
+        .select("duration");
+
+      const totalSeconds = videosData?.reduce((acc, video) => acc + (video.duration || 0), 0) || 0;
+      const totalHours = Math.floor(totalSeconds / 3600);
+      const totalMinutes = Math.floor((totalSeconds % 3600) / 60);
+
       setMetrics({
-        totalCameras: 0,
-        activeCameras: 0,
-        sharedCameras: 0,
-        blockedCameras: 0,
+        totalCameras: totalCameras || 0,
+        activeCameras: activeCameras || 0,
+        sharedCameras: 0, // TODO: Implement shared cameras logic
+        blockedCameras: blockedCameras || 0,
         totalClients: totalClients || 0,
         activeClients: activeClients || 0,
         blockedClients: blockedClients || 0,
-        totalVideos: 0,
-        totalHours: 0,
-        totalMinutes: 0,
+        totalVideos: totalVideos || 0,
+        totalHours,
+        totalMinutes,
       });
     } catch (error) {
       console.error("Error loading metrics:", error);

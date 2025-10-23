@@ -56,12 +56,64 @@ export default function ClienteDashboard() {
 
   const loadDashboardData = async () => {
     try {
-      // For now, using mock data
+      // Get current user
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) return;
+
+      // Get user's clients
+      const { data: userClients } = await supabase
+        .from("clients")
+        .select("id")
+        .eq("user_id", currentUser.id);
+
+      if (!userClients || userClients.length === 0) {
+        setMetrics({
+          totalCameras: 0,
+          onlineCameras: 0,
+          todayRecordings: 0,
+          recentAlerts: 0,
+        });
+        return;
+      }
+
+      const clientIds = userClients.map(c => c.id);
+
+      // Get cameras for user's clients
+      const { data: cameras, count: totalCameras } = await supabase
+        .from("cameras")
+        .select("*", { count: "exact" })
+        .in("client_id", clientIds);
+
+      // Count online cameras
+      const onlineCameras = cameras?.filter(c => c.status === "online").length || 0;
+
+      // Get camera IDs
+      const cameraIds = cameras?.map(c => c.id) || [];
+
+      // Get today's videos
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const { count: todayRecordings } = await supabase
+        .from("videos")
+        .select("*", { count: "exact", head: true })
+        .in("camera_id", cameraIds)
+        .gte("recorded_at", today.toISOString());
+
+      // Get recent alerts (last 24 hours)
+      const last24Hours = new Date();
+      last24Hours.setHours(last24Hours.getHours() - 24);
+
+      const { count: recentAlerts } = await supabase
+        .from("ai_detections")
+        .select("video_id", { count: "exact", head: true })
+        .gte("created_at", last24Hours.toISOString());
+
       setMetrics({
-        totalCameras: 0,
-        onlineCameras: 0,
-        todayRecordings: 0,
-        recentAlerts: 0,
+        totalCameras: totalCameras || 0,
+        onlineCameras,
+        todayRecordings: todayRecordings || 0,
+        recentAlerts: recentAlerts || 0,
       });
     } catch (error) {
       console.error("Error loading dashboard data:", error);
