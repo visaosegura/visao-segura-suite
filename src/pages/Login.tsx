@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, ShieldCheck, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import loginLogo from "@/assets/login-logo.png";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
@@ -58,34 +59,53 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4">
-            <ShieldCheck className="w-10 h-10 text-primary" />
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-50 via-white to-orange-50">
+      {/* Elementos decorativos sutis */}
+      <div className="absolute top-20 right-20 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-20 left-20 w-96 h-96 bg-orange-400/5 rounded-full blur-3xl"></div>
+
+      <div className="relative z-10 w-full max-w-md mx-4">
+        {/* Logo clean sem frame */}
+        <div className="text-center mb-12">
+          <div className="mb-6 flex justify-center">
+            <img 
+              src={loginLogo} 
+              alt="Visão Segura" 
+              className="w-48 h-48 object-contain"
+            />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight mb-2">Visão Segura</h1>
-          <p className="text-muted-foreground">Sistema de gestão de monitoramento</p>
         </div>
 
-        <div className="bg-card border shadow-lg rounded-lg p-8">
+        {/* Card de login clean */}
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
+          
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-slate-700 font-medium text-sm flex items-center gap-2">
+                <Mail className="w-4 h-4 text-orange-500" />
+                Email
+              </Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="seu@email.com"
                 {...register("email")}
                 disabled={isLoading}
+                className="h-12 bg-slate-50 border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
               />
               {errors.email && (
-                <p className="text-sm text-destructive">{errors.email.message}</p>
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" />
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
+              <Label htmlFor="password" className="text-slate-700 font-medium text-sm flex items-center gap-2">
+                <Lock className="w-4 h-4 text-orange-500" />
+                Senha
+              </Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -93,39 +113,53 @@ const Login = () => {
                   placeholder="••••••••"
                   {...register("password")}
                   disabled={isLoading}
-                  className="pr-10"
+                  className="h-12 bg-slate-50 border-slate-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 transition-colors"
                   disabled={isLoading}
                 >
                   {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
+                    <EyeOff className="w-5 h-5" />
                   ) : (
-                    <Eye className="w-4 h-4" />
+                    <Eye className="w-5 h-5" />
                   )}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-sm text-destructive">{errors.password.message}</p>
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" />
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Entrando..." : "Entrar"}
+            <Button 
+              type="submit" 
+              className="w-full h-12 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all" 
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Entrando...
+                </div>
+              ) : (
+                "Entrar"
+              )}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
-            <button className="text-sm text-primary hover:underline">
+            <button className="text-sm text-slate-600 hover:text-orange-500 hover:underline transition-colors">
               Esqueci minha senha
             </button>
           </div>
         </div>
 
-        <p className="text-center text-sm text-muted-foreground mt-6">
+        <p className="text-center text-sm text-slate-500 mt-8">
           © 2025 Visão Segura. Todos os direitos reservados.
         </p>
       </div>
